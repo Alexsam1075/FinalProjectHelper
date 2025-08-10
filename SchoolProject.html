@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Генератор Ваших проектов made by @AlexsandrDev</title>
+
+<style>
+  :root{
+    --bg-dark:#061022;
+    --card:#0f1724;
+    --muted:#9fb0d6;
+    --accent:#6f8cff;
+    --accent2:#7ce3c9;
+    --glass: rgba(255,255,255,0.03);
+    --success:#29c77a;
+    --danger:#ff6b6b;
+    --light-bg:#f5f7fb;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Inter, "Segoe UI", Roboto, Arial; -webkit-font-smoothing:antialiased;
+    background: linear-gradient(180deg,#041224 0%, #081025 100%); color:#dfefff;
+  }
+
+  /* Animated bubbles + fireflies (background) */
+  .bg-bubbles { position: fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
+  .bubble {
+    position:absolute;border-radius:50%;filter:blur(60px);opacity:0.12;transform:translate3d(0,0,0);
+    animation: floatSlow linear infinite;
+  }
+  .bubble.b1{ background:var(--accent); width:360px;height:360px; top:-80px; left:-80px; animation-duration:28s; }
+  .bubble.b2{ background:var(--accent2); width:460px;height:460px; bottom:-140px; right:-140px; animation-duration:34s; }
+  .bubble.b3{ background:rgba(124,156,255,0.08); width:220px;height:220px; top:20%; right:10%; animation-duration:20s; }
+  .bubble.b4{ background:rgba(124,255,220,0.06); width:300px;height:300px; left:12%; bottom:10%; animation-duration:24s; }
+
+  @keyframes floatSlow { from{transform:translateY(-10px) rotate(0deg);} to{transform:translateY(10px) rotate(360deg);} }
+
+  /* small fireflies */
+  .firefly { position:absolute;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.9);filter:blur(8px);opacity:.12;animation: drift 6s linear infinite; }
+  @keyframes drift { 0%{transform:translate(0,0) scale(.6);opacity:.05}50%{transform:translate(40px,-30px) scale(1);opacity:.18}100%{transform:translate(0,0) scale(.6);opacity:.05} }
+
+  /* Layout */
+  .container{max-width:1400px;margin:18px auto;padding:18px;display:flex;gap:18px;align-items:flex-start}
+  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,.6);flex:1;min-width:280px}
+  .left{max-width:720px}
+  h1{font-size:18px;margin:2px 0 10px}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input[type="text"], select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;outline:none}
+  textarea{min-height:80px;resize:vertical}
+  .row{display:flex;gap:10px}
+  .row > *{flex:1}
+  button{background:linear-gradient(90deg,var(--accent),#5fb3ff);border:none;padding:8px 12px;border-radius:10px;color:#071022;font-weight:700;cursor:pointer;transition:transform .12s, box-shadow .12s}
+  button:active{transform:translateY(1px)}
+  .small{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;color:var(--muted);cursor:pointer}
+  .section{margin-top:12px}
+  .section-title{font-weight:700;margin-bottom:8px}
+  .preview{background:#fff;color:#071022;border-radius:10px;padding:14px;overflow:auto;min-height:560px}
+  .title-big{font-family:"Times New Roman", Times, serif; font-size:14pt; font-weight:700; text-align:center;margin:18px 0;color:#071022}
+  .muted{color:var(--muted)}
+  .file-preview img{max-width:140px;border-radius:8px;margin:6px}
+  footer{color:var(--muted);text-align:center;margin-top:12px;font-size:13px}
+  .controls{display:flex;gap:8px;align-items:center}
+  .hint{font-size:13px;color:var(--muted)}
+  .progress{background: rgba(255,255,255,0.04);padding:10px;border-radius:10px}
+  .bar{height:12px;background:#0b1626;border-radius:999px;overflow:hidden}
+  .bar-inner{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .7s ease}
+  .theme-switch{display:flex;gap:8px;align-items:center}
+  .inline{display:inline-block}
+  @media (max-width:1000px){.container{flex-direction:column}.left{max-width:none}}
+</style>
+
+<!-- Libraries -->
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
+
+</head>
+<body>
+  <!-- animated background -->
+  <div class="bg-bubbles" aria-hidden="true">
+    <div class="bubble b1"></div>
+    <div class="bubble b2"></div>
+    <div class="bubble b3"></div>
+    <div class="bubble b4"></div>
+    <div class="firefly" style="left:20%;top:10%;animation-duration:5s"></div>
+    <div class="firefly" style="left:70%;top:30%;animation-duration:7s"></div>
+    <div class="firefly" style="left:40%;top:70%;animation-duration:6s"></div>
+  </div>
+
+  <div style="max-width:1400px;margin:10px auto;padding:0 18px;color:var(--muted)"><strong>IP Generator — ГОСТ (финальная правка)</strong> • Заполни форму, вставь изображения и скачай готовый .docx</div>
+
+  <div class="container">
+    <!-- left: form -->
+    <div class="card left">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Анкета — индивидуальный проект (10 класс)</h1>
+        <div class="controls">
+          <button id="loadDemo" class="small">Пример</button>
+          <button id="saveDraft" class="small">Сохранить</button>
+          <button id="clearDraft" class="small">Сброс</button>
+        </div>
+      </div>
+
+      <!-- Titular -->
+      <div class="section">
+        <div class="section-title">1. Основная информация (титульный лист)</div>
+        <label>Полное наименование учреждения</label>
+        <input id="school" type="text" placeholder='По умолчанию: ГОБУ города Москвы «Школа №1400»'>
+
+        <div class="row" style="margin-top:8px">
+          <div>
+            <label>Название темы проекта <span style="color:var(--danger)">*</span></label>
+            <input id="title" type="text" placeholder="Название проекта">
+          </div>
+          <div>
+            <label>Тип проекта</label>
+            <select id="type" style="padding:10px;border-radius:8px;font-weight:700;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.04)">
+              <option value="исследовательский">Исследовательский</option>
+              <option value="творческий">Творческий</option>
+              <option value="информационный">Информационный</option>
+              <option value="технический">Технический</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div><label>ФИО обучающегося <span style="color:var(--danger)">*</span></label><input id="student" type="text"></div>
+          <div><label>Класс</label><input id="grade" type="text" value="10" disabled></div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div><label>Буква класса</label><input id="classLetter" type="text"></div>
+          <div><label>ФИО руководителя</label><input id="supervisor" type="text"></div>
+        </div>
+
+        <div style="margin-top:10px"><label>Год выполнения</label><input id="year" type="text" value="2025-2026" disabled></div>
+      </div>
+
+      <!-- Introduction -->
+      <div class="section">
+        <div class="section-title">2. Введение</div>
+        <label>Краткое обоснование выбора темы</label>
+        <textarea id="rationale"></textarea>
+
+        <div style="margin-top:8px"><label>Цель проекта</label><input id="goal" type="text"></div>
+
+        <div style="margin-top:8px">
+          <label>Задачи проекта</label>
+          <div id="tasks"></div>
+          <div style="margin-top:8px"><button id="addTask" class="small">Добавить задачу</button></div>
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Гипотеза (только при исследовательском)</label>
+          <input id="hypothesis" type="text">
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Используемые инструменты</label>
+          <div id="tools"></div>
+          <div style="margin-top:8px"><button id="addTool" class="small">Добавить инструмент</button></div>
+        </div>
+
+        <div style="margin-top:8px" id="practicalWrap">
+          <label>Практическая значимость</label>
+          <textarea id="practical"></textarea>
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Список оборудования</label>
+          <div id="equipment"></div>
+          <div style="margin-top:8px"><button id="addEquip" class="small">Добавить оборудование</button></div>
+        </div>
+      </div>
+
+      <!-- Main part -->
+      <div class="section">
+        <div class="section-title">3. Основная часть</div>
+        <div id="chapters"></div>
+        <div style="margin-top:8px"><button id="addChapter">Добавить главу</button></div>
+      </div>
+
+      <!-- Conclusion, sources, attachments -->
+      <div class="section">
+        <div class="section-title">4. Заключение</div>
+        <textarea id="conclusion" placeholder="Основные выводы"></textarea>
+
+        <div class="section-title" style="margin-top:10px">5. Список использованных источников</div>
+        <div id="sources"></div>
+        <div style="margin-top:8px"><button id="addSource" class="small">Добавить источник</button></div>
+
+        <div class="section-title" style="margin-top:10px">6. Приложения</div>
+        <label>Загрузить изображения (png/jpg)</label>
+        <input id="attachments" type="file" accept="image/*" multiple>
+        <div id="files" class="file-preview"></div>
+      </div>
+
+      <!-- controls and progress -->
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+        <button id="export" class="btn">Скачать DOCX</button>
+        <button id="downloadHtml" class="small">Скачать HTML</button>
+        <div style="flex:1"></div>
+        <div style="width:260px">
+          <div class="progress">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div class="muted">Уровень: <strong id="level">Новичок</strong></div>
+              <div class="muted">Очки: <strong id="xp">0</strong></div>
+            </div>
+            <div class="bar" style="margin-top:8px"><div class="bar-inner" id="barInner"></div></div>
+            <div style="font-size:13px;color:var(--muted);margin-top:6px" id="toNext">До следующего: 40 очков</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: preview -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h1>Динамический предпросмотр</h1>
+        <div class="hint">Предпросмотр обновляется мгновенно</div>
+      </div>
+
+      <div id="preview" class="preview" role="region" aria-live="polite"></div>
+
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+        <button id="validate" class="small">Проверить поля</button>
+        <div style="flex:1"></div>
+        <button id="tocHint" class="small">Как обновить оглавление в Word?</button>
+      </div>
+
+      <div style="margin-top:10px;color:var(--muted);font-size:13px">Совет: если оглавление не обновилось — в Word нажми <strong>Ctrl+A → F9</strong>.</div>
+    </div>
+  </div>
+
+  <footer style="max-width:1400px;margin:8px auto;color:var(--muted);padding:0 18px">IP Generator — ГОСТ. Напиши, если хочешь: экспорт PDF, шаблоны, автоматическое сохранение в облаке.</footer>
+
+<script>
+/* ===== State and init ===== */
+const Clear = {
+  school: 'Государственное бюджетное общеобразовательное учреждение города Москвы «Школа № 1400»',
+  title: '',
+  type: 'исследовательский',
+  student: '',
+  grade: '10',
+  classLetter: 'И',
+  supervisor: '',
+  year: '2025-2026',
+  rationale: '',
+  goal: '',
+  tasks: [
+  ],
+  hypothesis: '',
+  tools: [
+  ],
+  practical: '',
+  equipment: [
+  ],
+  chapters: [
+  ],
+  conclusion: '',
+  sources: [
+  ],
+  attachments: []
+
+}
+const defaultDemo = {
+  school: 'Государственное бюджетное общеобразовательное учреждение города Москвы «Школа № 1400»',
+  title: 'Разработка образовательной платформы для создания итоговых проектов',
+  type: 'исследовательский',
+  student: 'Васильков Иван Иванович',
+  grade: '10',
+  classLetter: 'И',
+  supervisor: 'Рыбкина Ирина Владимировна',
+  year: '2025-2026',
+  rationale: 'Актуальность исследования обусловлена необходимостью цифровизации образовательного процесса. Согласно опросам, 78% учащихся испытывают трудности при оформлении итоговых проектов, а существующие платформы не учитывают специфику школьных требований ФГОС.',
+  goal: 'Создать и протестировать веб-платформу, упрощающую процесс создания итоговых проектов для учащихся 10 классов',
+  tasks: [
+    'Провести анализ существующих решений',
+    'Разработать требования к платформе',
+    'Создать прототип интерфейса',
+    'Реализовать базовый функционал',
+    'Провести тестирование среди учащихся',
+    'Проанализировать эффективность решения'
+  ],
+  hypothesis: 'Использование специализированной платформы сократит время создания проекта на 30% и повысит среднюю оценку на 1 балл',
+  tools: [
+    'Figma для проектирования интерфейса',
+    'Visual Studio Code',
+    'React.js для фронтенда',
+    'Node.js для бэкенда',
+    'Google Forms для опросов',
+    'Miro для схем архитектуры'
+  ],
+  practical: 'Рабочий прототип платформы с функциями: шаблоны проектов, автоматическое оформление, система проверки, база примеров',
+  equipment: [
+    'Ноутбук ASUS VivoBook (Core i5, 8GB RAM)',
+    'Графический планшет Wacom One',
+    'Хостинг-провайдер TimeWeb',
+    'Лицензия на Microsoft Office 365'
+  ],
+  chapters: [
+    { 
+      title: 'Анализ требований и проектирование системы',
+      content: 'Проведен детальный анализ 15 образовательных платформ. Выявлены ключевые недостатки: сложность интерфейса (67% респондентов), отсутствие школьных шаблонов (89%), несоответствие требованиям ФГОС (92%). На основе исследования составлено техническое задание, включающее 23 обязательных функции. Разработаны user-flow и прототипы основных экранов в Figma, проведено 3 итерации тестирования удобства интерфейса.'
+    },
+    {
+      title: 'Техническая реализация платформы',
+      content: 'Фронтенд реализован на React.js с использованием библиотек Material-UI и Draft.js для текстового редактора. Бэкенд разработан на Node.js с Express. База данных - MongoDB. Ключевые модули: 1) Интеллектуальный редактор с автозаполнением шаблонов; 2) Генератор титульных листов; 3) Система проверки структуры; 4) База из 120+ примеров проектов; 5) Интеграция с антиплагиатом. Особое внимание уделено адаптивности - платформа корректно работает на устройствах с экранами от 5".'
+    },
+    {
+      title: 'Тестирование и результаты',
+      content: 'В пилотном тестировании участвовали 42 ученика из 3 школ. Результаты: среднее время работы над проектом сократилось с 14 до 8 часов, количество ошибок оформления уменьшилось на 68%, средний балл повысился с 3.7 до 4.4. 89% участников отметили удобство интерфейса. На основе обратной связи добавлены: экспорт в PDF/DOCX, система напоминаний и расширенная база примеров.'
+    }
+  ],
+  conclusion: 'Разработанная платформа доказала свою эффективность, полностью подтвердив гипотезу исследования. Основные достижения: сокращение времени работы, улучшение качества проектов, снижение уровня стресса учащихся. Перспективы развития: добавление ИИ-ассистента, модуля командной работы и мобильного приложения.',
+  sources: [
+    'ФГОС СОО (Приказ Минпросвещения №732 от 12.08.2022)',
+    'Иванова С.П. "Цифровые образовательные технологии", 2023',
+    'Исследование НИУ ВШЭ "Цифровая трансформация школ", 2024',
+    'Документация React.js и Node.js',
+    'Методические рекомендации ДОгМ по проектной деятельности'
+  ],
+  attachments: []
+};
+let state = {};
+function loadLocal(){
+  const raw = localStorage.getItem('ipgen_final_v3');
+  if(raw) {
+    try { state = JSON.parse(raw); } catch(e) { state = JSON.parse(JSON.stringify(defaultDemo)); }
+  } else state = JSON.parse(JSON.stringify(defaultDemo));
+}
+loadLocal();
+
+/* Dom shortcuts */
+const $ = id => document.getElementById(id);
+
+/* Render functions */
+function renderForm(){
+  $('school').value = state.school || 'Государственное бюджетное общеобразовательное учреждение города Москвы «Школа № 1400»';
+  $('title').value = state.title || '';
+  $('type').value = state.type || 'исследовательский';
+  $('student').value = state.student || '';
+  $('grade').value = state.grade || '10';
+  $('classLetter').value = state.classLetter || 'И';
+  $('supervisor').value = state.supervisor || '';
+  $('year').value = state.year || '2025-2026';
+  $('rationale').value = state.rationale || '';
+  $('goal').value = state.goal || '';
+  $('hypothesis').value = state.hypothesis || '';
+  $('practical').value = state.practical || '';
+  $('conclusion').value = state.conclusion || '';
+  renderTasks(); renderTools(); renderEquipment(); renderChapters(); renderSources(); renderFiles(); renderPreview(); recalcXP();
+}
+
+/* Tasks */
+function renderTasks(){
+  const wrap = $('tasks'); wrap.innerHTML = '';
+  (state.tasks || []).forEach((t,i)=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.gap='8px'; div.style.marginTop='6px';
+    const inp = document.createElement('input'); inp.type='text'; inp.value=t; inp.oninput = e=>{ state.tasks[i]=e.target.value; save(); renderPreview(); recalcXP(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='✖'; del.onclick = ()=>{ state.tasks.splice(i,1); save(); renderTasks(); renderPreview(); recalcXP(); };
+    div.appendChild(inp); div.appendChild(del); wrap.appendChild(div);
+  });
+}
+$('addTask').addEventListener('click', ()=>{ state.tasks = state.tasks||[]; state.tasks.push(''); renderTasks(); save(); });
+
+/* Tools */
+function renderTools(){
+  const wrap = $('tools'); wrap.innerHTML = '';
+  (state.tools || []).forEach((t,i)=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.gap='8px'; div.style.marginTop='6px';
+    const inp = document.createElement('input'); inp.type='text'; inp.value=t; inp.oninput = e=>{ state.tools[i]=e.target.value; save(); renderPreview(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='✖'; del.onclick = ()=>{ state.tools.splice(i,1); save(); renderTools(); renderPreview(); };
+    div.appendChild(inp); div.appendChild(del); wrap.appendChild(div);
+  });
+}
+$('addTool').addEventListener('click', ()=>{ state.tools = state.tools||[]; state.tools.push(''); renderTools(); save(); });
+
+/* Equipment */
+function renderEquipment(){
+  const wrap = $('equipment'); wrap.innerHTML = '';
+  (state.equipment || []).forEach((e,i)=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.gap='8px'; div.style.marginTop='6px';
+    const inp = document.createElement('input'); inp.type='text'; inp.value=e; inp.oninput = ev=>{ state.equipment[i]=ev.target.value; save(); renderPreview(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='✖'; del.onclick = ()=>{ state.equipment.splice(i,1); save(); renderEquipment(); renderPreview(); };
+    div.appendChild(inp); div.appendChild(del); wrap.appendChild(div);
+  });
+}
+$('addEquip').addEventListener('click', ()=>{ state.equipment = state.equipment||[]; state.equipment.push(''); renderEquipment(); save(); });
+
+/* Chapters */
+function renderChapters(){
+  const wrap = $('chapters'); wrap.innerHTML = '';
+  (state.chapters || []).forEach((c,i)=>{
+    const box = document.createElement('div'); box.style.border='1px solid rgba(255,255,255,0.03)'; box.style.padding='8px'; box.style.borderRadius='8px'; box.style.marginTop='8px';
+    const title = document.createElement('input'); title.type='text'; title.value = c.title; title.oninput = e=>{ state.chapters[i].title = e.target.value; save(); renderPreview(); };
+    const cont = document.createElement('textarea'); cont.value = c.content; cont.oninput = e=>{ state.chapters[i].content = e.target.value; save(); renderPreview(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='Удалить главу'; del.onclick = ()=>{ state.chapters.splice(i,1); save(); renderChapters(); renderPreview(); recalcXP(); };
+    box.appendChild(title); box.appendChild(cont); box.appendChild(del); wrap.appendChild(box);
+  });
+}
+$('addChapter').addEventListener('click', ()=>{ state.chapters = state.chapters||[]; state.chapters.push({ title:`Глава ${ (state.chapters||[]).length + 1 }. Новая глава`, content:'' }); renderChapters(); save(); });
+
+/* Sources */
+function renderSources(){
+  const wrap = $('sources'); wrap.innerHTML = '';
+  (state.sources || []).forEach((s,i)=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.gap='8px'; div.style.marginTop='6px';
+    const inp = document.createElement('input'); inp.type='text'; inp.value = s; inp.oninput = e=>{ state.sources[i]=e.target.value; save(); renderPreview(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='✖'; del.onclick = ()=>{ state.sources.splice(i,1); save(); renderSources(); renderPreview(); };
+    div.appendChild(inp); div.appendChild(del); wrap.appendChild(div);
+  });
+}
+$('addSource').addEventListener('click', ()=>{ state.sources = state.sources||[]; state.sources.push(''); renderSources(); save(); });
+
+/* Files and embedding */
+function renderFiles(){
+  const container = $('files'); container.innerHTML = '';
+  (state.attachments||[]).forEach((f,i)=>{
+    const wrap = document.createElement('div'); wrap.style.display='inline-block'; wrap.style.margin='6px'; wrap.style.textAlign='center';
+    const img = document.createElement('img'); img.src = f.dataUrl; img.style.maxWidth='140px'; img.style.borderRadius='8px'; img.style.display='block';
+    const cap = document.createElement('input'); cap.type='text'; cap.placeholder = 'Подпись (будет: Рис. X. подпись)'; cap.value = f.caption||''; cap.oninput = e=>{ state.attachments[i].caption = e.target.value; save(); renderPreview(); };
+    const del = document.createElement('button'); del.className='small'; del.textContent='✖'; del.onclick = ()=>{ state.attachments.splice(i,1); save(); renderFiles(); renderPreview(); recalcXP(); };
+    wrap.appendChild(img); wrap.appendChild(cap); wrap.appendChild(del); container.appendChild(wrap);
+  });
+}
+$('attachments').addEventListener('change', async e=>{
+  const files = Array.from(e.target.files);
+  for(const f of files){
+    const reader = new FileReader();
+    await new Promise(res => {
+      reader.onload = ()=>{ state.attachments = state.attachments||[]; state.attachments.push({ name:f.name, dataUrl:reader.result, caption:'' }); res(); };
+      reader.readAsDataURL(f);
+    });
+  }
+  $('attachments').value=''; save(); renderFiles(); renderPreview(); recalcXP();
+});
+
+/* Save/load */
+function save(){ localStorage.setItem('ipgen_final_v3', JSON.stringify(state)); }
+$('loadDemo').addEventListener('click', ()=>{ state = JSON.parse(JSON.stringify(defaultDemo)); save(); renderForm(); alert('Пример загружен'); });
+$('saveDraft').addEventListener('click', ()=>{ save(); alert('Черновик сохранён'); });
+$('clearDraft').addEventListener('click', ()=>{ if(confirm('Очистить форму и черновик?')){ localStorage.removeItem('ipgen_final_v3'); state = JSON.parse(JSON.stringify(Clear)); save(); renderForm(); } });
+
+/* Validation */
+function validate(){
+  const errors = [];
+  if(!state.title || !state.title.trim()) errors.push('Название проекта');
+  if(!state.student || !state.student.trim()) errors.push('ФИО обучающегося');
+  if(!state.supervisor || !state.supervisor.trim()) errors.push('ФИО руководителя');
+  return errors;
+}
+$('validate').addEventListener('click', ()=>{ const errs = validate(); if(errs.length===0) alert('Ошибок не найдено'); else alert('Пожалуйста заполните: ' + errs.join(', ')); });
+
+/* XP */
+function recalcXP(){
+  let points=0;
+  if(state.school && state.school.trim()) points+=8;
+  if(state.title && state.title.trim()) points+=20;
+  if(state.student && state.student.trim()) points+=10;
+  if(state.supervisor && state.supervisor.trim()) points+=8;
+  if(state.goal && state.goal.trim()) points+=12;
+  points += (state.tasks||[]).filter(Boolean).length * 6;
+  points += (state.chapters||[]).length * 12;
+  points += (state.sources||[]).filter(Boolean).length * 4;
+  points += (state.attachments||[]).length * 3;
+  $('xp').textContent = points;
+  let level='Новичок', next=40;
+  if(points>=140){ level='Эксперт'; next=0; }
+  else if(points>=80){ level='Исследователь'; next=140-points; }
+  else if(points>=40){ level='Ученик'; next=80-points; }
+  else next = 40-points;
+  $('level').textContent = level;
+  $('toNext').textContent = next>0?('До следующего: '+next+' очков'):'Максимум';
+  const pct = Math.min(100, Math.round(points / 140 * 100));
+  $('barInner').style.width = pct + '%';
+}
+
+/* Preview render */
+function renderPreview(){
+  const p = $('preview'); p.innerHTML = '';
+  const schoolText = (state.school && state.school.trim()) ? state.school.trim() : 'ГОБУ города Москвы «Школа №1400»';
+
+  // Title page (visual centered)
+  const tit = document.createElement('div');
+  tit.style.minHeight = '420px';
+  tit.style.display = 'flex';
+  tit.style.flexDirection = 'column';
+  tit.style.justifyContent = 'center';
+  tit.style.alignItems = 'center';
+  tit.innerHTML = `<div style="font-family:Times New Roman, serif;font-size:14pt;color:#475768">${escapeHtml(schoolText)}</div>
+    <div style="height:28px"></div>
+    <div class="title-big">${escapeHtml(state.title || '')}</div>`;
+  // bottom-right author block
+  const bottom = document.createElement('div');
+  bottom.style.marginTop = '18px';
+  bottom.style.width = '100%';
+  bottom.innerHTML = `<div style="display:flex;justify-content:flex-end"><div style="text-align:right;color:#475768">Работу выполнил:<br>${escapeHtml(state.student || '')},<br>учащийся ${escapeHtml(state.grade || '10')} класса «${escapeHtml(state.classLetter || '')}»<br><br>Научный руководитель:<br>${escapeHtml(state.supervisor || '')}</div></div>
+  <div style="height:30px"></div>
+  <div style="text-align:center;color:#475768">${escapeHtml(state.year || '')}</div>`;
+  tit.appendChild(bottom);
+  p.appendChild(tit);
+
+  // Automatic TOC preview with leaders (visual only)
+  const toc = document.createElement('div'); toc.style.marginTop='12px'; toc.style.padding='10px'; toc.style.background='#f7f9fc'; toc.style.color='#163042'; toc.style.borderRadius='8px';
+  const tocTitle = document.createElement('div'); tocTitle.style.fontWeight='700'; tocTitle.style.marginBottom='6px'; tocTitle.textContent = 'СОДЕРЖАНИЕ';
+  toc.appendChild(tocTitle);
+  const tocList = [];
+  tocList.push({t:'Введение', n:3});
+  (state.chapters||[]).forEach((c,i)=> tocList.push({t:`Глава ${i+1}. ${stripChapterPrefix(c.title)}`, n: 5 + i*3}));
+  tocList.push({t:'Заключение', n: 5 + (state.chapters||[]).length*3});
+  tocList.push({t:'Список использованных источников', n: 6 + (state.chapters||[]).length*3});
+  if((state.attachments||[]).length) tocList.push({t:'Приложения', n: 7 + (state.chapters||[]).length*3});
+  tocList.forEach(item=>{
+    const row = document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.fontSize='13px'; row.style.color='#405a6a';
+    const left = document.createElement('div'); left.textContent = item.t;
+    const right = document.createElement('div'); right.textContent = item.n;
+    row.appendChild(left); row.appendChild(right); toc.appendChild(row);
+  });
+  p.appendChild(toc);
+
+  // Introduction
+  const intro = document.createElement('div'); intro.style.marginTop='12px';
+  intro.innerHTML = `<h3 style="text-align:center;font-weight:800">ВВЕДЕНИЕ</h3>
+    <p><strong>Обоснование:</strong> ${escapeHtml(state.rationale || '')}</p>
+    <p><strong>Цель:</strong> ${escapeHtml(state.goal || '')}</p>
+    <p><strong>Задачи:</strong></p><ol>${(state.tasks||[]).map(t=>`<li>${escapeHtml(t||'')}</li>`).join('')}</ol>`;
+  if(state.hypothesis) intro.innerHTML += `<p><strong>Гипотеза:</strong> ${escapeHtml(state.hypothesis)}</p>`;
+  if(state.tools && state.tools.length) intro.innerHTML += `<p><strong>Инструменты:</strong> ${escapeHtml(state.tools.join(', '))}</p>`;
+  if(state.practical) intro.innerHTML += `<p><strong>Практическая значимость:</strong> ${escapeHtml(state.practical)}</p>`;
+  if(state.equipment && state.equipment.length) intro.innerHTML += `<p><strong>Оборудование:</strong></p><ul>${state.equipment.map(e=>`<li>${escapeHtml(e)}</li>`).join('')}</ul>`;
+  p.appendChild(intro);
+
+  // Main part (OСНОВНАЯ ЧАСТЬ and Chapter 1 on same page)
+  const main = document.createElement('div'); main.style.marginTop='12px';
+  main.innerHTML = `<h3 style="text-align:center;font-weight:800">ОСНОВНАЯ ЧАСТЬ</h3>`;
+  (state.chapters||[]).forEach((c,i)=>{
+    const ch = document.createElement('div'); ch.style.marginTop='10px';
+    const title = stripChapterPrefix(c.title || `Глава ${i+1}`);
+    ch.innerHTML = `<h4 style="font-weight:800">Глава ${i+1}. ${escapeHtml(title)}</h4><p>${escapeHtml(c.content||'')}</p>`;
+    main.appendChild(ch);
+  });
+  p.appendChild(main);
+
+  // Conclusion
+  const concl = document.createElement('div'); concl.style.marginTop='12px';
+  concl.innerHTML = `<h3 style="text-align:center;font-weight:800">ЗАКЛЮЧЕНИЕ</h3><p>${escapeHtml(state.conclusion || '')}</p>`;
+  p.appendChild(concl);
+
+  // Sources
+  const src = document.createElement('div'); src.style.marginTop='12px';
+  src.innerHTML = `<h3 style="text-align:center;font-weight:800">СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ</h3><ul>${(state.sources||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+  p.appendChild(src);
+
+  // Appendices with images preview
+  if((state.attachments||[]).length){
+    const apps = document.createElement('div'); apps.style.marginTop='12px';
+    apps.innerHTML = `<h3 style="text-align:center;font-weight:800">ПРИЛОЖЕНИЯ</h3>`;
+    state.attachments.forEach((a,i)=> {
+      const d = document.createElement('div'); d.style.textAlign='center'; d.style.marginTop='10px';
+      d.innerHTML = `<img src="${a.dataUrl}" style="max-width:320px;border-radius:8px;display:block;margin:0 auto"/><div style="margin-top:6px;color:#4a5568">Рис. ${i+1}. ${escapeHtml(a.caption || '')}</div>`;
+      apps.appendChild(d);
+    });
+    p.appendChild(apps);
+  }
+}
+
+/* Helpers */
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function stripChapterPrefix(s){ return (s||'').toString().replace(/^Глава\s*\d+\.\s*/i,'').trim(); }
+
+/* Bind inputs */
+$('title').addEventListener('input', e=>{ state.title = e.target.value; save(); renderPreview(); recalcXP(); });
+$('school').addEventListener('input', e=>{ state.school = e.target.value; save(); renderPreview(); });
+$('type').addEventListener('change', e=>{ state.type = e.target.value; save(); if(state.type === 'исследовательский') $('practicalWrap').style.display='none'; else $('practicalWrap').style.display='block'; });
+$('student').addEventListener('input', e=>{ state.student = e.target.value; save(); renderPreview(); recalcXP(); });
+$('classLetter').addEventListener('input', e=>{ state.classLetter = e.target.value; save(); renderPreview(); });
+$('supervisor').addEventListener('input', e=>{ state.supervisor = e.target.value; save(); renderPreview(); recalcXP(); });
+$('rationale').addEventListener('input', e=>{ state.rationale = e.target.value; save(); renderPreview(); });
+$('goal').addEventListener('input', e=>{ state.goal = e.target.value; save(); renderPreview(); recalcXP(); });
+$('hypothesis').addEventListener('input', e=>{ state.hypothesis = e.target.value; save(); renderPreview(); });
+$('practical').addEventListener('input', e=>{ state.practical = e.target.value; save(); renderPreview(); });
+$('conclusion').addEventListener('input', e=>{ state.conclusion = e.target.value; save(); renderPreview(); });
+
+/* Initial render */
+renderForm();
+
+/* Export DOCX: редактируемый, ГОСТ-стиль, изображения встроены, содержание вручную */
+/* Export DOCX: strict ГОСТ, images embedded, TOC inserted */
+async function exportDocx() {
+    const errs = validate();
+    if (errs.length && !confirm('Есть незаполненные поля: ' + errs.join(', ') + '. Экспортировать всё равно?')) return;
+
+    try {
+        const docx = window.docx;
+        const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Footer, SectionType, TableOfContents } = docx;
+
+        const cm = 567;
+        const margins = { top: Math.round(2 * cm), right: Math.round(1.5 * cm), bottom: Math.round(2 * cm), left: Math.round(3 * cm) };
+
+        function tr(text, opts = {}) {
+            return new TextRun({
+                text: text || '',
+                font: 'Times New Roman',
+                size: 28,
+                bold: !!opts.bold,
+                italics: !!opts.italic,
+                color: opts.color || '000000'
+            });
+        }
+
+        function paraRuns(runs, opts = {}) {
+            const p = new Paragraph({ children: runs, alignment: opts.alignment || AlignmentType.BOTH });
+            p.spacing = { line: 360 };
+            if (!opts.noIndent) p.indent = { firstLine: Math.round(1.25 * cm) };
+            if (opts.heading) p.heading = opts.heading;
+            if (opts.pageBreakBefore) p.pageBreakBefore = true;
+            return p;
+        }
+
+        // --- Титульный лист ---
+        const titleChildren = [];
+        const schoolText = state.school?.trim() || 'Государственное бюджетное общеобразовательное учреждение города Москвы «Школа № 1400»';
+        titleChildren.push(new Paragraph({ children: [tr(schoolText)], alignment: AlignmentType.CENTER }));
+        for (let i = 0; i < 13; i++) titleChildren.push(new Paragraph({ children: [tr('')] }));
+        titleChildren.push(new Paragraph({ children: [tr(state.title || '', { bold: true, color: '000000' })], alignment: AlignmentType.CENTER }));
+        for (let i = 0; i < 31; i++) titleChildren.push(new Paragraph({ children: [tr('')] }));
+        titleChildren.push(new Paragraph({ children: [tr('Работу выполнил:')], alignment: AlignmentType.RIGHT }));
+        titleChildren.push(new Paragraph({ children: [tr(state.student || '')], alignment: AlignmentType.RIGHT }));
+        titleChildren.push(new Paragraph({ children: [tr(`учащийся ${state.grade || '10'} класса «${state.classLetter || ''}»`)], alignment: AlignmentType.RIGHT }));
+        titleChildren.push(new Paragraph({ children: [tr('')] }));
+        titleChildren.push(new Paragraph({ children: [tr('Научный руководитель:')], alignment: AlignmentType.RIGHT }));
+        titleChildren.push(new Paragraph({ children: [tr(state.supervisor || '')], alignment: AlignmentType.RIGHT }));
+        for (let i = 0; i < 3; i++) titleChildren.push(new Paragraph({ children: [tr('')] }));
+        titleChildren.push(new Paragraph({ children: [tr(state.year || '')], alignment: AlignmentType.CENTER }));
+
+        const titleSection = { properties: { page: { margin: margins }, type: SectionType.NEXT_PAGE }, children: titleChildren };
+
+        // --- Основная часть ---
+        const mainChildren = [];
+
+        // Содержание
+        mainChildren.push(
+            new Paragraph({
+                children: [tr("Содержание", { bold: true, color: '000000' })],
+                spacing: { after: 300 },
+                alignment: AlignmentType.CENTER
+            }),
+            new TableOfContents("Содержание", {
+                hyperlink: false,
+                headingStyleRange: "1-3",
+                stylesWithLevels: [
+                    { style: "Heading1", level: 1 },
+                    { style: "Heading2", level: 2 },
+                    { style: "Heading3", level: 3 }
+                ]
+            })
+        );
+
+        // Введение
+        mainChildren.push(new Paragraph({
+            children: [tr("Введение", { bold: true, color: '000000' })],
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            pageBreakBefore: true
+        }));
+        if (state.rationale) mainChildren.push(paraRuns([tr('Обоснование: '), tr(state.rationale)]));
+        if (state.goal) mainChildren.push(paraRuns([tr('Цель: '), tr(state.goal)]));
+        if (state.tasks?.length) {
+            mainChildren.push(paraRuns([tr('Задачи:', { bold: true })]));
+            state.tasks.forEach((t, idx) => mainChildren.push(paraRuns([tr(`${idx + 1}. ${t}`)])));
+        }
+        if (state.hypothesis?.trim()) mainChildren.push(paraRuns([tr('Гипотеза: '), tr(state.hypothesis)]));
+        if (state.tools?.length) mainChildren.push(paraRuns([tr('Используемые инструменты: '), tr(state.tools.join(', '))]));
+        if (state.practical?.trim()) mainChildren.push(paraRuns([tr('Практическая значимость: '), tr(state.practical)]));
+        if (state.equipment?.length) {
+            mainChildren.push(paraRuns([tr('Оборудование:', { bold: true })]));
+            state.equipment.forEach(eq => mainChildren.push(paraRuns([tr(eq)])));
+        }
+
+        // Основная часть
+        mainChildren.push(new Paragraph({
+            children: [tr("Основная часть", { bold: true, color: '000000' })],
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            pageBreakBefore: true
+        }));
+        (state.chapters || []).forEach((c, idx) => {
+            const ensuredTitle = c.title.match(/^Глава\s*\d+\./i) ? c.title : `Глава ${idx + 1}. ${c.title}`;
+            mainChildren.push(new Paragraph({
+                children: [tr(ensuredTitle, { bold: true, color: '000000' })],
+                heading: HeadingLevel.HEADING_1,
+                pageBreakBefore: idx >= 1
+            }));
+            const lines = (c.content || '').split('\n').filter(Boolean);
+            if (!lines.length) mainChildren.push(paraRuns([tr('')]));
+            lines.forEach(line => mainChildren.push(paraRuns([tr(line)])));
+        });
+
+        // Заключение
+        mainChildren.push(new Paragraph({
+            children: [tr("Заключение", { bold: true, color: '000000' })],
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            pageBreakBefore: true
+        }));
+        mainChildren.push(paraRuns([tr(state.conclusion || '')]));
+
+        // Источники
+        mainChildren.push(new Paragraph({
+            children: [tr("Список использованных источников", { bold: true, color: '000000' })],
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            pageBreakBefore: true
+        }));
+        (state.sources || []).forEach(s => mainChildren.push(paraRuns([tr(s)], { noIndent: true })));
+
+        // Приложения
+        if ((state.attachments || []).length) {
+            mainChildren.push(new Paragraph({
+                children: [tr("Приложения", { bold: true, color: '000000' })],
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+                pageBreakBefore: true
+            }));
+            state.attachments.forEach((a, i) => {
+                const arrBuff = dataURLToArrayBuffer(a.dataUrl);
+                try {
+                    const image = new docx.ImageRun({ data: arrBuff, transformation: { width: 450, height: Math.round(450 * 0.6) } });
+                    mainChildren.push(new Paragraph({ children: [image], alignment: AlignmentType.CENTER }));
+                } catch {
+                    mainChildren.push(new Paragraph({ children: [tr(`(Не удалось вставить изображение ${a.name})`) ] }));
+                }
+                mainChildren.push(new Paragraph({ children: [tr(`Рис. ${i + 1}. ${a.caption || ''}`)], alignment: AlignmentType.CENTER }));
+            });
+        }
+
+        const mainSection = {
+            properties: { page: { margin: margins }, pageNumberStart: 1 },
+            footers: {
+                default: new Footer({
+                    children: [new Paragraph({ children: [new TextRun({ children: [docx.PageNumber.CURRENT], font: 'Times New Roman', size: 24 })], alignment: AlignmentType.CENTER })]
+                })
+            },
+            children: mainChildren
+        };
+
+        const doc = new Document({ sections: [titleSection, mainSection] });
+        const blob = await Packer.toBlob(doc);
+        saveAs(blob, (state.title || 'project') + '.docx');
+        alert('Содержание обновляется через Ctrl+A → F9');
+    } catch (err) {
+        console.error('Ошибка при генерации DOCX:', err);
+        alert('Ошибка при генерации DOCX: ' + (err?.message || err));
+    }
+}
+
+
+/* Convert dataURL to ArrayBuffer */
+function dataURLToArrayBuffer(dataURL){
+  const base64 = dataURL.split(',')[1];
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+  return bytes.buffer;
+}
+
+/* Bind export */
+$('export').addEventListener('click', exportDocx);
+
+/* Download HTML snapshot */
+$('downloadHtml').addEventListener('click', ()=>{
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(state.title||'IP')}</title></head><body>${$('preview').innerHTML}</body></html>`;
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  saveAs(blob, (state.title || 'project') + '.html');
+});
+
+/* small helpers */
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* initial render & bindings for inputs that affect preview */
+renderForm();
+
+</script>
+</body>
+</html>
